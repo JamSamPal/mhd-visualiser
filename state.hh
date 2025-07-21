@@ -7,6 +7,7 @@
     total energy
     velocity
     pressure
+    magnetic field
 */
 
 class state {

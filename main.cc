@@ -1,43 +1,56 @@
 #include "config.hh"
 #include "solver.hh"
 #include <iostream>
+#include <math.h>
 
 int main() {
     // Increasing the data points and decreasing the timestep will more
     // closely approximate the exact solution
-    const int N = 10000;        // Number of grid points
-    const double L = 1.0;       // Domain length
-    const double dx = L / N;    // Spatial step
-    const double dt = 0.00001;  // Time step
-    const double t_final = 0.2; // End time
+    const int N = 200;        // Number of grid points
+    const double L = 1.0;     // Domain length
+    const double dx = L / N;  // Spatial step
+    const double dt = 0.0005; // Time step
+    const double t_final = 5; // End time
 
     Solver solver(N, dt, dx);
 
-    // Sod tube initial state
-    double rho_left = 1.0;
-    double u_left = 0.0;
-    double p_left = 1.0;
-
-    double rho_right = 0.125;
-    double u_right = 0.0;
-    double p_right = 0.1;
-
-    double E_left = p_left / (gamma - 1.0) + 0.5 * rho_left * u_left * u_left;
-    double E_right = p_right / (gamma - 1.0) + 0.5 * rho_right * u_right * u_right;
+    double rho0 = 1.0;
+    double p0 = 1.0;
+    double Bx = 1.0;
+    double delta = 0.1;
 
     for (int i = 0; i < N; ++i) {
-        if (i < N / 2) {
-            solver.grid[i] = state(rho_left, rho_left * u_left, E_left);
-        } else {
-            solver.grid[i] = state(rho_right, rho_right * u_right, E_right);
-        }
+        double x = i * dx;
+
+        double uy = delta * sin(2 * M_PI * x);
+        double By = delta * sin(2 * M_PI * x);
+        double uz = 0.0;
+        double Bz = 0.0;
+        double ux = 0.0;
+
+        double momx = rho0 * ux;
+        double momy = rho0 * uy;
+        double momz = rho0 * uz;
+
+        double kinetic = 0.5 * rho0 * (ux * ux + uy * uy + uz * uz);
+        double magnetic = 0.5 * (Bx * Bx + By * By + Bz * Bz);
+        double energy = p0 / (Gamma - 1) + kinetic + magnetic;
+
+        solver.grid[i] = state(rho0, momx, momy, momz, energy, By, Bz);
     }
+
+    const int output_interval = 100;
+    int step_count = 0;
 
     for (double t = 0.0; t < t_final; t += dt) {
         solver.step();
-    }
+        step_count++;
 
-    solver.getGrid();
+        if (step_count % output_interval == 0) {
+            std::string filename = "output/data_" + std::to_string(step_count) + ".dat";
+            solver.saveGrid(filename);
+        }
+    }
 
     return 0;
 }

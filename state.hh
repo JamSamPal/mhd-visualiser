@@ -12,12 +12,30 @@
 class state {
 public:
     double rho;
-    double mom;
+    double momx;
+    double momy;
+    double momz;
+    double p;
+    double ux;
+    double uy;
+    double uz;
     double E;
-    state() : rho(0.0), mom(0.0), E(0.0) {}
-    state(double r, double m, double e) : rho(r), mom(m), E(e) {}
+    // allowing for transverse fields
+    double By, Bz;
+    state() : rho(0.0), momx(0.0), momy(0.0), momz(0.0), E(0.0), By(0.0), Bz(0.0) {
+        ux = velocity(momx);
+        uy = velocity(momy);
+        uz = velocity(momz);
+        p = pressure();
+    }
+    state(double r, double mx, double my, double mz, double e, double by, double bz) : rho(r), momx(mx), momy(my), momz(mz), E(e), By(by), Bz(bz) {
+        ux = velocity(mx);
+        uy = velocity(my);
+        uz = velocity(mz);
+        p = pressure();
+    }
     state flux();
-    double velocity();
+    double velocity(const double &mom);
     double pressure();
 };
 

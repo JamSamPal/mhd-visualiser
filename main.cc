@@ -21,7 +21,8 @@ int main() {
 
     for (int i = 0; i < N; ++i) {
         double x = i * dx;
-
+        // This small perturbation around a constant background should
+        // lead to propagating waves
         double uy = delta * sin(2 * M_PI * x);
         double By = delta * sin(2 * M_PI * x);
         double uz = 0.0;

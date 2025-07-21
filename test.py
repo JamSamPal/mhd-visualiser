@@ -1,39 +1,32 @@
-import matplotlib.pyplot as plt
-import sodshock
 import numpy as np
+import matplotlib.pyplot as plt
+import glob
+import time
 
-# Verify numerical algorithm
-# We compare with the analytical solution
-# so results won't be identical but a plot
-# should qualitatively verify we are correct
-gamma = 1.4
-dustFrac = 0.0
-npts = 100
-t = 0.2
-left_state = (1,1,0)
-right_state = (0.1, 0.125, 0)
+# Get sorted list of output files
+files = sorted(glob.glob("output/data_*.dat"), key=lambda x: int(x.split('_')[1].split('.')[0]))
 
-# Compute solution
-positions, regions, values = sodshock.solve(left_state=left_state, \
-        right_state=right_state, geometry=(0, 1, 0.5), t=t, 
-        gamma=gamma, npts=npts, dustFrac=dustFrac)
+fig, ax = plt.subplots()
+line, = ax.plot([], [], lw=2)
+ax.set_xlim(0, 1)
+ax.set_ylim(-2, 2)
+ax.set_xlabel('x')
+ax.set_ylabel('By')
+ax.set_title('Alfvén wave evolution w/ periodic BC')
 
+def init():
+    line.set_data([], [])
+    return line,
 
-# Save density to file
-np.savetxt('analytical.dat', np.column_stack((values['x'], values['rho'])))
+def update(frame):
+    data = np.loadtxt(files[frame])
+    x = data[:, 0]
+    By = data[:,6]
+    line.set_data(x, By)
+    ax.set_title(f"Alfvén wave at step {frame * 100}")  # Adjust if output_interval changes
+    return line,
 
-data = np.loadtxt("density.dat")
-analytics = np.loadtxt("analytical.dat")
-x = data[:, 0]
-rho = data[:, 1]
-x_an = analytics[:, 0]
-rho_an = analytics[:, 1]
+from matplotlib.animation import FuncAnimation
+ani = FuncAnimation(fig, update, frames=len(files), init_func=init, blit=True, interval=100)
 
-plt.plot(x, rho, label="Density")
-plt.plot(x_an, rho_an, label="Density")
-plt.xlabel("x")
-plt.ylabel("ρ")
-plt.title("Density Profile")
-plt.grid(True)
-plt.legend()
 plt.show()

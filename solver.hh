@@ -2,6 +2,7 @@
 #define E0B6E553_AFE0_4110_AD38_81812E2EA298
 
 #include "state.hh"
+#include <string>
 #include <vector>
 
 class Solver {
@@ -10,7 +11,7 @@ public:
         : N(gridSize), dt(dt), dx(dx), grid(gridSize, state()) {};
     std::vector<state>
         grid;
-    void getGrid();
+    void saveGrid(const std::string &filename);
     void step();
 
 private:

@@ -38,3 +38,17 @@ This configuration excites a linearly polarized Alfvén wave which causes oscill
 - The solver outputs snapshots of all fields at specified time intervals for post-processing.
 
 ---
+
+---
+
+## Running
+
+clear output directory
+
+g++ -o mhd_solver main.cc solver.cc state.cc
+./mhd_solver
+
+And then
+
+python test.py
+---

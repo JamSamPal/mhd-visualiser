@@ -24,7 +24,7 @@ def update(frame):
     # The magnetic field in the y direction should exhibit wave like oscillations if the model is correct
     By = data[:,6]
     line.set_data(x, By)
-    ax.set_title(f"Alfvén wave at step {frame * 100}")  # Adjust if output_interval changes
+    ax.set_title(f"Alfvén wave at step {frame * 100}")
     return line,
 
 from matplotlib.animation import FuncAnimation

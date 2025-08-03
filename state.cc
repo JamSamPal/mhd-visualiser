@@ -20,7 +20,7 @@ state state::flux() {
         momx * uy - Bx * By,          // y-momentum flux
         momx * uz - Bx * Bz,          // z-momentum flux
         (E + ptot) * ux - Bx * BdotV, // energy flux
-        uy * Bx - ux * By,            // By evolution
-        uz * Bx - ux * Bz             // Bz evolution
+        uy * Bx - ux * By,            // By flux
+        uz * Bx - ux * Bz             // Bz flux
     );
 }

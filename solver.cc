@@ -23,7 +23,8 @@ void Solver::step() {
         state UR = grid[iR];
         state FL = UL.flux();
         state FR = UR.flux();
-
+        // Lax Friedrichs update scheme: a given quantity changes according to the incoming
+        // and outgoing flux
         newGrid[i].rho = 0.5 * (UL.rho + UR.rho) - 0.5 * (dt / dx) * (FR.rho - FL.rho);
         newGrid[i].momx = 0.5 * (UL.momx + UR.momx) - 0.5 * (dt / dx) * (FR.momx - FL.momx);
         newGrid[i].momy = 0.5 * (UL.momy + UR.momy) - 0.5 * (dt / dx) * (FR.momy - FL.momy);

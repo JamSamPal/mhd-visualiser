@@ -36,9 +36,11 @@ This configuration excites a linearly polarized Alfvén wave which causes oscill
 clear output directory
 
 g++ -o mhd_solver main.cc solver.cc state.cc
+
 ./mhd_solver
 
 And then
 
 python test.py
+
 ---
